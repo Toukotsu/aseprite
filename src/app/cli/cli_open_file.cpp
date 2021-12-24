@@ -35,6 +35,8 @@ CliOpenFile::CliOpenFile()
   trim = false;
   trimByGrid = false;
   oneFrame = false;
+  applyPixelRatio = false;
+  isForTwitter = false;
   crop = gfx::Rect();
 }
 

@@ -319,16 +319,33 @@ public:
   SaveFileCopyAsCommand();
 
 protected:
+  void onLoadParams(const Params& params) override;
   void onExecute(Context* context) override;
 
 private:
   void moveToUndoState(Doc* doc,
                        const undo::UndoState* state);
+
+private:
+  bool m_applyPixelRatio = false;
+  bool m_isForTwitter = false;
 };
 
 SaveFileCopyAsCommand::SaveFileCopyAsCommand()
   : SaveFileBaseCommand(CommandId::SaveFileCopyAs(), CmdRecordableFlag)
 {
+}
+
+void SaveFileCopyAsCommand::onLoadParams(const Params& params) {
+  SaveFileBaseCommand::onLoadParams(params);
+
+  auto GetBoolValue = [&params](const char* name) {
+    std::string strValue = params.get(name);
+    return (!strValue.empty()) && (strValue == "true");
+  };
+
+  m_isForTwitter = GetBoolValue("isForTwitter");
+  m_applyPixelRatio = GetBoolValue("applyPixelRatio");
 }
 
 void SaveFileCopyAsCommand::onExecute(Context* context)
@@ -339,9 +356,7 @@ void SaveFileCopyAsCommand::onExecute(Context* context)
   std::string frames = kAllFrames;
   double xscale = 1.0;
   double yscale = 1.0;
-  bool applyPixelRatio = false;
   doc::AniDir aniDirValue = convert_string_to_anidir(m_aniDir);
-  bool isForTwitter = false;
 
 #if ENABLE_UI
   if (m_useUI && context->isUIAvailable()) {
@@ -390,14 +405,14 @@ void SaveFileCopyAsCommand::onExecute(Context* context)
     layers = win.layersValue();
     frames = win.framesValue();
     xscale = yscale = win.resizeValue();
-    applyPixelRatio = win.applyPixelRatio();
+    m_applyPixelRatio = win.applyPixelRatio();
     aniDirValue = win.aniDirValue();
-    isForTwitter = win.isForTwitter();
+    m_isForTwitter = win.isForTwitter();
   }
 #endif
 
   // Pixel ratio
-  if (applyPixelRatio) {
+  if (m_applyPixelRatio) {
     doc::PixelRatio pr = doc->sprite()->pixelRatio();
     xscale *= pr.w;
     yscale *= pr.h;
@@ -457,8 +472,8 @@ void SaveFileCopyAsCommand::onExecute(Context* context)
       m_aniDir);                             // Restore old value
 
     // TODO This should be set as options for the specific encoder
-    GifEncoderDurationFix fixGif(isForTwitter);
-    PngEncoderOneAlphaPixel fixPng(isForTwitter);
+    GifEncoderDurationFix fixGif(m_isForTwitter);
+    PngEncoderOneAlphaPixel fixPng(m_isForTwitter);
 
     saveDocumentInBackground(
       context, doc, outputFilename, false);

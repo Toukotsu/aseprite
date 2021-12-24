@@ -99,6 +99,12 @@ void DefaultCliDelegate::saveFile(Context* ctx, const CliOpenFile& cof)
   if (cof.ignoreEmpty)
     params.set("ignoreEmpty", "true");
 
+  if (cof.applyPixelRatio)
+    params.set("applyPixelRatio", "true");
+
+  if (cof.isForTwitter)
+    params.set("isForTwitter", "true");
+
   ctx->executeCommand(saveAsCommand, params);
 }
 
