@@ -141,6 +141,13 @@ std::string convert_filter_to_layer_path_if_possible(
     return filter;
 }
 
+void set_visible_all_layers(app::Doc* targetdocument, bool visibility) {
+  if (targetdocument) {
+    for (auto layer : targetdocument->sprite()->allLayers())
+      layer->setVisible(visibility);
+  }
+}
+
 } // anonymous namespace
 
 // static
@@ -295,6 +302,8 @@ int CliProcessor::process(Context* ctx)
         // --all-layers
         else if (opt == &m_options.allLayers()) {
           cof.allLayers = true;
+          // apply value for current document
+          set_visible_all_layers(ctx->activeDocument(), true);
         }
         // --tag <tag-name>
         else if (opt == &m_options.tag()) {
@@ -649,8 +658,7 @@ bool CliProcessor::openFile(Context* ctx, CliOpenFile& cof)
   if (doc) {
     // Show all layers
     if (cof.allLayers) {
-      for (doc::Layer* layer : doc->sprite()->allLayers())
-        layer->setVisible(true);
+      set_visible_all_layers(doc, true);
     }
 
     // Add document to exporter
