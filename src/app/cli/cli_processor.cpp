@@ -382,6 +382,14 @@ int CliProcessor::process(Context* ctx)
           if (m_exporter)
             m_exporter->setFilenameFormat(cof.filenameFormat);
         }
+        // --apply-pixel-ratio
+        else if (opt == &m_options.applyPixelRatio()) {
+          cof.applyPixelRatio = true;
+        }
+        // --is-for-twitter
+        else if (opt == &m_options.isForTwitter()) {
+          cof.isForTwitter = true;
+        }
         // --save-as <filename>
         else if (opt == &m_options.saveAs()) {
           if (lastDoc) {

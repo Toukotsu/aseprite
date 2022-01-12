@@ -89,6 +89,8 @@ public:
   const Option& listTags() const { return m_listTags; }
   const Option& listSlices() const { return m_listSlices; }
   const Option& oneFrame() const { return m_oneFrame; }
+  const Option& applyPixelRatio() const { return m_applyPixelRatio; }
+  const Option& isForTwitter() const { return m_isForTwitter; }
 
   bool hasExporterParams() const;
 #ifdef _WIN32
@@ -155,6 +157,8 @@ private:
   Option& m_listTags;
   Option& m_listSlices;
   Option& m_oneFrame;
+  Option& m_applyPixelRatio;
+  Option& m_isForTwitter;
 
   Option& m_verbose;
   Option& m_debug;

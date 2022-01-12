@@ -40,6 +40,8 @@ namespace app {
     bool trim;
     bool trimByGrid;
     bool oneFrame;
+    bool applyPixelRatio;
+    bool isForTwitter;
     gfx::Rect crop;
 
     CliOpenFile();
